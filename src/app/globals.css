@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --page-bg: #0b1118;
+  --ink: #e7edf7;
+  --muted: #98a7c4;
+  --panel: #121b26;
+  --panel-strong: #182334;
+  --accent: #4aa3ff;
+  --accent-strong: #2f7bd7;
+  --accent-alt: #c4a26b;
+  --line: rgba(231, 237, 247, 0.14);
+  --shadow: 0 30px 90px rgba(4, 8, 18, 0.5);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--page-bg);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+}
+
+.trailx-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.trailx-glow {
+  background: radial-gradient(
+      circle at top left,
+      rgba(74, 163, 255, 0.22),
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at 20% 70%,
+      rgba(196, 162, 107, 0.18),
+      transparent 55%
+    );
+}
+
+.trailx-grid {
+  background-image: linear-gradient(
+      rgba(231, 237, 247, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(231, 237, 247, 0.06) 1px,
+      transparent 1px
+    );
+  background-size: 56px 56px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      circle at 80% 20%,
+      rgba(74, 163, 255, 0.08),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 10% 80%,
+      rgba(196, 162, 107, 0.06),
+      transparent 50%
+    );
+  z-index: -1;
 }

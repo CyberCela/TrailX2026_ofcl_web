@@ -1,0 +1,95 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.role == 'admin';
+    }
+
+    function isOrganizer() {
+      return isSignedIn() && request.auth.token.role == 'organizer';
+    }
+
+    function isVolunteer() {
+      return isSignedIn() && request.auth.token.role == 'volunteer';
+    }
+
+    function isParticipant() {
+      return isSignedIn() && request.auth.token.role == 'participant';
+    }
+
+    function isTeamMember() {
+      return isSignedIn() && request.auth.uid in resource.data.memberIds;
+    }
+
+    function isTeamLeader() {
+      return isSignedIn() && request.auth.uid == resource.data.leaderId;
+    }
+
+    function isValidTeamCategory() {
+      return request.resource.data.category in ['Scouts', 'Rover Scouts', 'Open'];
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isAdmin()
+        || (isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.status == resource.data.status);
+      allow delete: if isAdmin();
+    }
+
+    match /teams/{teamId} {
+      allow read: if isAdmin() || isOrganizer() || isVolunteer() || isTeamMember();
+      allow create: if isSignedIn() && isValidTeamCategory();
+      allow update: if (isAdmin() || isOrganizer() || isTeamLeader())
+        && isValidTeamCategory();
+      allow delete: if isAdmin();
+    }
+
+    match /scores/{teamId} {
+      allow read: if true;
+      allow write: if isAdmin() || isOrganizer();
+    }
+
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow write: if isAdmin() || isOrganizer();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAdmin()
+        || (isSignedIn() && request.auth.uid == resource.data.userId);
+      allow create: if isSignedIn()
+        && request.auth.uid == request.resource.data.userId;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /resources/{resourceId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() || isOrganizer();
+    }
+
+    match /activities/{activityId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() || isOrganizer();
+    }
+
+    match /sponsors/{sponsorId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
