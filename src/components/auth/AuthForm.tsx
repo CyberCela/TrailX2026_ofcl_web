@@ -42,6 +42,8 @@ export function AuthForm() {
     setLoading(true);
     setError(null);
 
+    const form = event.currentTarget;
+
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
@@ -53,7 +55,8 @@ export function AuthForm() {
       } else {
         await signIn(email, password);
       }
-      event.currentTarget.reset();
+      form.reset();
+      setEmailValue("");
       setStatus(null);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unexpected error.";
