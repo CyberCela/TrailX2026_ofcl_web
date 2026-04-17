@@ -1,4 +1,4 @@
-# TrailX 2026 Web App
+# TrailX 2026 Web App 
 
 Production-ready MVP for TrailX 2026 with role-based dashboards, real-time scoring, and Firebase-backed workflows.
 
