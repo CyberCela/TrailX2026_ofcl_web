@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
 export function AuthForm() {
-  const { register, signIn, sendMagicLink, completeMagicLinkSignIn, isMagicLink } =
+  const { user, register, signIn, sendMagicLink, completeMagicLinkSignIn, isMagicLink } =
     useAuth();
+  const router = useRouter();
   const [mode, setMode] = useState<"signin" | "register">("register");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,6 +15,10 @@ export function AuthForm() {
   const [emailValue, setEmailValue] = useState("");
 
   useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+      return;
+    }
     if (typeof window === "undefined") return;
     const link = window.location.href;
     if (!isMagicLink(link)) return;
@@ -35,7 +41,7 @@ export function AuthForm() {
       .finally(() => {
         setLoading(false);
       });
-  }, [completeMagicLinkSignIn, isMagicLink]);
+  }, [user, router, completeMagicLinkSignIn, isMagicLink]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
