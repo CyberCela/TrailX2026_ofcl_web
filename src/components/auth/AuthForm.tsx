@@ -59,6 +59,7 @@ export function AuthForm() {
       setEmailValue("");
       setStatus(null);
     } catch (err) {
+      console.error("Auth submit failed:", err);
       const message = err instanceof Error ? err.message : "Unexpected error.";
       setError(message);
     } finally {

@@ -72,17 +72,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const register = async (email: string, password: string, displayName: string) => {
-    if (!isFirebaseConfigured) return;
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(result.user, { displayName });
+    if (!isFirebaseConfigured) {
+      console.error("Firebase not configured. Registration skipped.");
+      return;
+    }
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(result.user, { displayName });
 
-    await setDoc(doc(db, "users", result.user.uid), {
-      displayName,
-      email,
-      role: defaultRole,
-      status: "pending",
-      createdAt: serverTimestamp(),
-    });
+      await setDoc(doc(db, "users", result.user.uid), {
+        displayName,
+        email,
+        role: defaultRole,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error("Registration failed:", err);
+      throw err;
+    }
   };
 
   const signIn = async (email: string, password: string) => {
