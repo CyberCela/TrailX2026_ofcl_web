@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_DASHBOARDS, ROLE_LABELS } from "@/lib/rbac";
 
@@ -15,6 +16,7 @@ export function DashboardShell({ title, description, children }: DashboardShellP
 
   return (
     <div className="min-h-screen bg-[var(--page-bg)]">
+      <SiteHeader />
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>

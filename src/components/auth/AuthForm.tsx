@@ -54,10 +54,11 @@ export function AuthForm() {
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
     const displayName = String(formData.get("displayName"));
+    const gender = String(formData.get("gender")) as "Male" | "Female";
 
     try {
       if (mode === "register") {
-        await register(email, password, displayName);
+        await register(email, password, displayName, gender);
       } else {
         await signIn(email, password);
       }
@@ -146,6 +147,23 @@ export function AuthForm() {
               required
               className="rounded-xl border border-[var(--line)] px-4 py-3 text-sm text-[var(--ink)]"
             />
+          </label>
+        )}
+        {mode === "register" && (
+          <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--muted)]">
+            Gender
+            <select
+              name="gender"
+              required
+              defaultValue=""
+              className="rounded-xl border border-[var(--line)] px-4 py-3 text-sm text-[var(--ink)]"
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </label>
         )}
         <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--muted)]">

@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 export function SiteHeader() {
+  const { user } = useAuth();
+
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[color:rgba(11,17,24,0.92)] backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
@@ -22,19 +27,30 @@ export function SiteHeader() {
           <Link href="/sponsors" className="transition hover:text-[var(--ink)]">
             Sponsors
           </Link>
-          <Link href="/register" className="transition hover:text-[var(--ink)]">
-            Register
-          </Link>
+          {!user && (
+            <Link href="/register" className="transition hover:text-[var(--ink)]">
+              Register
+            </Link>
+          )}
           <Link href="/dashboard" className="transition hover:text-[var(--ink)]">
             Dashboard
           </Link>
         </nav>
-        <Link
-          href="/register"
-          className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[var(--accent-strong)]"
-        >
-          Register now
-        </Link>
+        {user ? (
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition hover:border-transparent hover:bg-[var(--ink)] hover:text-white"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          <Link
+            href="/register"
+            className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[var(--accent-strong)]"
+          >
+            Register now
+          </Link>
+        )}
       </div>
     </header>
   );

@@ -14,7 +14,7 @@ import {
 import { doc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth, db, isFirebaseConfigured } from "@/lib/firebase/client";
-import type { Role, UserProfile } from "@/lib/types";
+import type { Gender, Role, UserProfile } from "@/lib/types";
 
 const defaultRole: Role = "participant";
 
@@ -26,7 +26,12 @@ type AuthState = {
 };
 
 type AuthContextValue = AuthState & {
-  register: (email: string, password: string, displayName: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    displayName: string,
+    gender: Gender
+  ) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   sendMagicLink: (email: string) => Promise<void>;
   completeMagicLinkSignIn: (email: string, link: string) => Promise<void>;
@@ -71,7 +76,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribeAuth();
   }, []);
 
-  const register = async (email: string, password: string, displayName: string) => {
+  const register = async (
+    email: string,
+    password: string,
+    displayName: string,
+    gender: Gender
+  ) => {
     if (!isFirebaseConfigured) {
       console.error("Firebase not configured. Registration skipped.");
       return;
@@ -83,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await setDoc(doc(db, "users", result.user.uid), {
         displayName,
         email,
+        gender,
         role: defaultRole,
         status: "pending",
         createdAt: serverTimestamp(),

@@ -2,6 +2,8 @@ export type Role = "admin" | "organizer" | "volunteer" | "participant";
 
 export type TeamCategory = "Scouts" | "Rover Scouts" | "Open";
 
+export type Gender = "Male" | "Female";
+
 export type ActivityCategory = "Skill" | "Physical" | "Bonus";
 
 export type ActivityStatus = "active" | "inactive";
@@ -12,10 +14,17 @@ export type UserProfile = {
   id?: string;
   displayName: string;
   email: string;
+  gender: Gender;
   role: Role;
   status: "pending" | "approved" | "rejected";
   teamId?: string;
   createdAt?: unknown;
+};
+
+export type TeamMember = {
+  name: string;
+  gender: Gender;
+  isLeader?: boolean;
 };
 
 export type Team = {
@@ -24,6 +33,9 @@ export type Team = {
   leaderId: string;
   memberIds: string[];
   category: TeamCategory;
+  members: TeamMember[];
+  memberCount: number;
+  femaleCount: number;
   createdAt?: unknown;
 };
 

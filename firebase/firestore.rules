@@ -47,7 +47,12 @@ service cloud.firestore {
 
     match /teams/{teamId} {
       allow read: if isAdmin() || isOrganizer() || isVolunteer() || isTeamMember();
-      allow create: if isSignedIn() && isValidTeamCategory();
+      allow create: if isSignedIn()
+        && isValidTeamCategory()
+        && request.resource.data.memberCount <= 8
+        && request.resource.data.memberCount >= 1
+        && request.resource.data.members.size() == request.resource.data.memberCount
+        && request.resource.data.femaleCount >= 3;
       allow update: if (isAdmin() || isOrganizer() || isTeamLeader())
         && isValidTeamCategory();
       allow delete: if isAdmin();
@@ -55,7 +60,10 @@ service cloud.firestore {
 
     match /scores/{teamId} {
       allow read: if true;
-      allow write: if isAdmin() || isOrganizer();
+      allow create: if isSignedIn()
+        && request.auth.uid
+          == get(/databases/$(database)/documents/teams/$(teamId)).data.leaderId;
+      allow update, delete: if isAdmin() || isOrganizer();
     }
 
     match /events/{eventId} {
